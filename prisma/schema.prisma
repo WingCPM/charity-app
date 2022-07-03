@@ -9,20 +9,17 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
-model Product {
-    id          Int       @id @default(autoincrement())
-    name        String
-    description String
-    price       Decimal
-    image       String
-    category    Category? @relation(fields: [category_id], references: [id])
-    category_id Int
-    @@index([category_id])
+model Businesses {
+    id              Int       @id @default(autoincrement())
+    name            String
+    donation_amount Decimal
+    charity_id      Int
+    charity         Charities? @relation(fields: [charity_id], references: [id])
+    @@index([charity_id])
 }
 
-model Category {
-    id          Int       @id @default(autoincrement())
-    name        String
-    description String
-    products    Product[]
+model Charities {
+    id              Int       @id @default(autoincrement())
+    name            String
+    businesses    Businesses[]
 }

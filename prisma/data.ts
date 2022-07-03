@@ -1,52 +1,36 @@
 const { Prisma } = require("@prisma/client");
 
-const categories = [
+const charities = [
   {
-    name: "Hats",
-    description: "Things you can wear on your head",
+    name: "RSPCA",
   },
   {
-    name: "Socks",
-    description: "Things you can wear on your feet",
+    name: "NSPCC",
   },
   {
-    name: "Shirts",
-    description: "Things you wear on the top half of your body",
+    name: "WWF",
   },
 ];
 
-const products = [
+const businesses = [
   {
-    name: "Cool helmet.",
-    description: "A nice helmet to wear on your head",
-    price: new Prisma.Decimal(19.95),
-    image: "/images/helmet.jpg",
-    category_id: 1,
+    name: "Apple",
+    donation_amount: new Prisma.Decimal(5500.55),
+    charity_id: 1,
   },
   {
-    name: "Grey T-Shirt",
-    description: "A nice shirt that you can wear on your body",
-    price: new Prisma.Decimal(22.95),
-    image: "/images/shirt.jpg",
-    category_id: 3,
+    name: "Google",
+    donation_amount: new Prisma.Decimal(2200.0),
+    charity_id: 3,
   },
   {
-    name: "Socks",
-    description: "Cool socks that you can wear on your feet",
-    price: new Prisma.Decimal(12.95),
-    image: "/images/socks.jpg",
-    category_id: 2,
-  },
-  {
-    name: "Sweatshirt",
-    description: "Cool sweatshirt that you can wear on your body",
-    price: new Prisma.Decimal(12.95),
-    image: "/images/sweatshirt.jpg",
-    category_id: 3,
+    name: "Netflix",
+    donation_amount: new Prisma.Decimal(1000.95),
+    charity_id: 2,
   },
 ];
 
 module.exports = {
-  products,
-  categories,
+  businesses,
+  charities,
 };

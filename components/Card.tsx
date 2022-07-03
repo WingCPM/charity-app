@@ -7,7 +7,9 @@ interface CardProps {
   name: string;
   description: string;
   causes: string[];
-  socials?: { instagram?: string; twitter?: string; facebook?: string }[];
+  socials?: {
+    platform: string;
+  }[];
   website: string;
 }
 

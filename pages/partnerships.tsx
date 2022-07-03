@@ -2,19 +2,17 @@ import type { NextPage } from "next";
 import { Container } from "@chakra-ui/react";
 import prisma from "../lib/prisma";
 
-export async function getStaticProps(context) {
-  const data = await prisma.product.findMany({
+export async function getStaticProps() {
+  const data = await prisma.businesses.findMany({
     include: {
-      category: true,
+      charity: true,
     },
   });
 
   const products = data.map((product) => ({
     ...product,
-    price: product.price.toString(),
+    donation_amount: product.donation_amount.toString(),
   }));
-
-  console.log("products", products);
 
   return { props: { products } };
 }

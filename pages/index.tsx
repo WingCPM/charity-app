@@ -4,7 +4,7 @@ import { Grid, Container } from "@chakra-ui/react";
 
 import { Card } from "../components/Card";
 
-export async function getStaticProps(context) {
+export async function getStaticProps() {
   const URL = "https://charitybase.uk/api/graphql";
   const HEADERS = {
     Authorization: "Apikey YOUR_API_KEY",
@@ -78,7 +78,7 @@ interface HomeProps {
           };
         };
         contact: {
-          social: { instagram?: string; twitter?: string; facebook?: string }[];
+          social: any;
         };
         names: {
           value: string;
@@ -95,17 +95,9 @@ interface HomeProps {
 
 const Home: NextPage = ({ charities }: HomeProps) => {
   const router = useRouter();
-  8;
-  console.log("charities", charities);
-
-  const slugifyURLPath = (name: string) =>
-    name.split(" ").join("_").toLowerCase();
-
-  const unslugifyURLPath = (slugifyURLPath: string) =>
-    slugifyURLPath.split("_").join(" ").toLowerCase();
 
   const handlePage = ({ charity }) => {
-    router.push(`/profile/${slugifyURLPath(charity.names[0].value)}`);
+    router.push(`/profile/${charity.id}`);
   };
 
   return (
