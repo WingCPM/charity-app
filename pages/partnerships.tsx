@@ -4,6 +4,11 @@ import prisma from "../lib/prisma";
 
 export async function getStaticProps() {
   const data = await prisma.businesses.findMany({
+    where: {
+      name: {
+        equals: "Sainsburys",
+      },
+    },
     include: {
       charity: true,
     },
@@ -18,9 +23,7 @@ export async function getStaticProps() {
 }
 
 interface PartnershipsProps {
-  products: {
-    shit: true;
-  };
+  products: any;
 }
 
 const Partnerships: NextPage = ({ products }: PartnershipsProps) => {
@@ -29,6 +32,12 @@ const Partnerships: NextPage = ({ products }: PartnershipsProps) => {
   return (
     <Container maxW="8xl" centerContent mt={24} mb={24}>
       <p>partnerships page</p>
+      {products.map((product) => (
+        <>
+          <h1>{product.charity.name}</h1>
+          <h1>{product.donation_amount}</h1>
+        </>
+      ))}
     </Container>
   );
 };

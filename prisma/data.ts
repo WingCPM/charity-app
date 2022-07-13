@@ -10,25 +10,12 @@ const charities = [
   {
     name: "WWF",
   },
+  {
+    name: "THE ARTS COUNCIL OF ENGLAND",
+  },
 ];
 
-const businesses = [
-  {
-    name: "Apple",
-    donation_amount: new Prisma.Decimal(5500.55),
-    charity_id: 1,
-  },
-  {
-    name: "Google",
-    donation_amount: new Prisma.Decimal(2200.0),
-    charity_id: 3,
-  },
-  {
-    name: "Netflix",
-    donation_amount: new Prisma.Decimal(1000.95),
-    charity_id: 2,
-  },
-];
+const businesses = [];
 
 module.exports = {
   businesses,

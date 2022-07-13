@@ -7,56 +7,7 @@ import { Grid, Container, Box, Badge, Heading, Text } from "@chakra-ui/react";
 import { CheckoutForm } from "../../components/CheckoutForm";
 
 export async function getStaticPaths(context) {
-  const URL = "https://charitybase.uk/api/graphql";
-  const HEADERS = {
-    Authorization: "Apikey YOUR_API_KEY",
-    "Content-Type": "application/json",
-  };
-  const COUNT_QUERY = `
-  {
-    CHC {
-      getCharities(filters: {}) {
-        list(limit: 30) {
-          id
-          names {
-            value
-          }
-        }
-      }
-    }
-  }
-`;
-
-  async function countCharities() {
-    return fetch(URL, {
-      method: "POST",
-      headers: HEADERS,
-      body: JSON.stringify({ query: COUNT_QUERY }),
-    })
-      .then((res) => res.json())
-      .catch((err) => {
-        console.error("FETCH ERROR (probably your network)");
-        throw err;
-      })
-      .then(({ data, errors }) => {
-        if (errors) {
-          console.error("QUERY ERRORS");
-          throw errors;
-        }
-        return { data: data.CHC.getCharities };
-      });
-  }
-
-  const data = await countCharities();
-  console.log("data hahah", data.data);
-
-  const paths = data.data.list.map((path) => {
-    return `/profile/${path.id}`;
-  });
-
-  console.log("paths", paths);
-
-  return { paths, fallback: false };
+  return { paths: ["/profile/1036733"], fallback: false };
 }
 
 export async function getStaticProps({ params }) {
@@ -164,20 +115,20 @@ const Charity: NextPage = ({ charity }: ProfileProps) => {
   };
 
   useEffect(() => {
-    console.log("calling backend");
+    console.log("CREATING PAYMENT INTETN");
     fetch("/api/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         donationAmount: 500,
         charity: charity.data.list[0].names[0].value,
+        business_name: "Sainsburys",
       }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
   }, []);
 
-  console.log("charity", charity);
   return (
     clientSecret && (
       <Elements options={options} stripe={stripePromise}>

@@ -4,17 +4,17 @@ const prisma = new PrismaClient();
 
 const load = async () => {
   try {
-    // await prisma.charity.deleteMany();
-    // console.log("Deleted records in charity table");
+    await prisma.businesses.deleteMany();
+    console.log("Deleted records in businesses table");
 
-    // await prisma.businesses.deleteMany();
-    // console.log("Deleted records in businesses table");
+    await prisma.charities.deleteMany();
+    console.log("Deleted records in charity table");
 
-    // await prisma.$queryRaw`ALTER TABLE Businesses AUTO_INCREMENT = 1`;
-    // console.log("reset businesses auto increment to 1");
+    await prisma.$queryRaw`ALTER TABLE Businesses AUTO_INCREMENT = 1`;
+    console.log("reset businesses auto increment to 1");
 
-    // await prisma.$queryRaw`ALTER TABLE Charity AUTO_INCREMENT = 1`;
-    // console.log("reset charity auto increment to 1");
+    await prisma.$queryRaw`ALTER TABLE Charities AUTO_INCREMENT = 1`;
+    console.log("reset charity auto increment to 1");
 
     await prisma.charities.createMany({
       data: charities,
