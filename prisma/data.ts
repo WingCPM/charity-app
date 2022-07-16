@@ -17,7 +17,15 @@ const charities = [
 
 const businesses = [];
 
+const users = [
+  {
+    username: "ioetbc",
+    email: "ioetbc@gmail.com",
+  },
+];
+
 module.exports = {
-  businesses,
   charities,
+  businesses,
+  users,
 };

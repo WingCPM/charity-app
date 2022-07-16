@@ -23,3 +23,9 @@ model Charities {
     name            String
     businesses    Businesses[]
 }
+
+model Users {
+    id              Int       @id @default(autoincrement())
+    username        String
+    email           String
+}

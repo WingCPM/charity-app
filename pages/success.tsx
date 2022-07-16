@@ -1,13 +1,4 @@
-import React, { useEffect, useState } from "react";
-import {
-  PaymentElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { HandleRetrieve } from "../components/HandleRetrieve";
+import React from "react";
 
 import type { NextPage } from "next";
 import { Container, Box, Heading } from "@chakra-ui/react";

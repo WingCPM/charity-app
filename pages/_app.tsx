@@ -1,5 +1,7 @@
 import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
+import { SessionProvider, SessionProviderProps } from "next-auth/react";
+import { useRouter } from "next/router";
+import { Button, ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 
 const colors = {
@@ -12,11 +14,20 @@ const colors = {
 
 const theme = extendTheme({ colors });
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({
+  Component,
+  pageProps,
+  session,
+}: AppProps & { session: SessionProviderProps["session"] }) {
+  const router = useRouter();
   return (
-    <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <SessionProvider session={session}>
+      <ChakraProvider theme={theme}>
+        <Button onClick={() => router.push(`/login`)}>login</Button>
+        <Button onClick={() => router.push(`/account`)}>account</Button>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </SessionProvider>
   );
 }
 

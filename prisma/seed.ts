@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-const { charities, businesses } = require("./data.ts");
+const { charities, businesses, users } = require("./data.ts");
 const prisma = new PrismaClient();
 
 const load = async () => {
@@ -16,6 +16,9 @@ const load = async () => {
     await prisma.$queryRaw`ALTER TABLE Charities AUTO_INCREMENT = 1`;
     console.log("reset charity auto increment to 1");
 
+    await prisma.$queryRaw`ALTER TABLE Users AUTO_INCREMENT = 1`;
+    console.log("reset users auto increment to 1");
+
     await prisma.charities.createMany({
       data: charities,
     });
@@ -27,6 +30,12 @@ const load = async () => {
     });
 
     console.log("Added businesses data");
+
+    await prisma.users.createMany({
+      data: users,
+    });
+
+    console.log("Added users data");
   } catch (e) {
     console.error(e);
     process.exit(1);

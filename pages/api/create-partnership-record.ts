@@ -4,8 +4,6 @@ const client = new PrismaClient();
 export default async function handler(req, res) {
   try {
     const { business_name, donation_amount } = req.body;
-    console.log("wtf", business_name);
-    console.log("wtf", donation_amount);
     await client.businesses.create({
       data: {
         name: business_name,
