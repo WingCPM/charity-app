@@ -2,11 +2,11 @@ import { PrismaClient } from "@prisma/client";
 const client = new PrismaClient();
 
 export default async function handler(req, res) {
-  const { username, email } = req.body;
+  const { charity_name, email } = req.body;
   try {
     const user = await client.users.create({
       data: {
-        username,
+        charity_name,
         email,
       },
     });

@@ -20,8 +20,23 @@ model Businesses {
 
 model Charities {
     id              Int       @id @default(autoincrement())
-    name            String
-    businesses    Businesses[]
+    name            String    @unique
+    businesses      Businesses[]
+    email           String
+    social          Boolean
+    education       Boolean
+    conservation    Boolean
+    environmental   Boolean
+    cultural        Boolean
+    training        Boolean
+    animals         Boolean
+    science         Boolean
+    bio             String
+    email_address   String
+    website         String
+    tiktok          String
+    instagram       String
+    snapchat        String
 }
 
 model Users {
