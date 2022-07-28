@@ -22,15 +22,8 @@ model Charities {
     id              Int       @id @default(autoincrement())
     name            String    @unique
     businesses      Businesses[]
+    causes          Causes[]
     email           String
-    social          Boolean
-    education       Boolean
-    conservation    Boolean
-    environmental   Boolean
-    cultural        Boolean
-    training        Boolean
-    animals         Boolean
-    science         Boolean
     bio             String
     email_address   String
     website         String
@@ -43,4 +36,18 @@ model Users {
     id              Int       @id @default(autoincrement())
     username        String
     email           String
+}
+
+model Causes {
+    id              Int       @id @default(autoincrement())
+    charity_id      Int
+    charity         Charities @relation(fields: [charity_id], references: [id])
+    social          Boolean
+    education       Boolean
+    conservation    Boolean
+    environmental   Boolean
+    cultural        Boolean
+    training        Boolean
+    animals         Boolean
+    science         Boolean
 }

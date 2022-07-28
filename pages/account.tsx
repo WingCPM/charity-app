@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { getSession } from "next-auth/react";
 import {
   Box,
@@ -42,29 +42,40 @@ export const getServerSideProps = async (ctx) => {
 };
 
 const Account = ({ account }) => {
-  const [accountData, setAccountData] = React.useState({});
+  const [accountData, setAccountData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   console.log("account", account);
+
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
+    const { id, value, checked } = e.target;
     console.log("name", id);
-    setAccountData({ ...accountData, [id]: value });
+    console.log("value", !!value);
+    console.log("checked", checked);
+    setAccountData({ ...accountData, [id]: value || checked });
   };
 
+  // CREATE NEW TABLE FOR CAUSES THEN LINK CHARITY TO CAUSES TABLE
   const handleOnSubmit = async () => {
+    setIsLoading(true);
     console.log("submitting", accountData);
     try {
-      await fetch("http://localhost:3000/api/update-charity-account", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(accountData),
-      });
+      const response = await fetch(
+        "http://localhost:3000/api/update-charity-account",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(accountData),
+        }
+      );
+      setIsLoading(false);
     } catch (error) {
       console.log("ERROR UPDATING CHARITY ACCOUNT", error);
     }
   };
 
+  console.log("account", account);
   return (
     <Container maxW="3xl" mt={24} mb={24}>
       <Box display="flex" flexDirection="column" gap="10" mt={5} mb={4}>
@@ -91,28 +102,67 @@ const Account = ({ account }) => {
         <FormControl isRequired>
           <FormLabel htmlFor="bio">Select the causes you support</FormLabel>
           <Stack display="grid" gridTemplateColumns="1fr 1fr 1fr">
-            <Checkbox size="md" colorScheme="green">
+            <Checkbox
+              id="social"
+              size="md"
+              colorScheme="green"
+              onChange={handleInputChange}
+              defaultChecked={account.causes[0]["social"]}
+            >
               Social
             </Checkbox>
-            <Checkbox size="md" colorScheme="green">
+            <Checkbox
+              id="environmental"
+              size="md"
+              colorScheme="green"
+              onChange={handleInputChange}
+              defaultChecked={account.causes[0]["environmental"]}
+            >
               Environmental
             </Checkbox>
-            <Checkbox size="md" colorScheme="green">
+            <Checkbox
+              id="animals"
+              size="md"
+              colorScheme="green"
+              onChange={handleInputChange}
+              defaultChecked={account.causes[0]["animals"]}
+            >
               Animals
             </Checkbox>
-            <Checkbox size="md" colorScheme="green">
+            <Checkbox
+              id="education"
+              size="md"
+              colorScheme="green"
+              onChange={handleInputChange}
+              defaultChecked={account.causes[0]["education"]}
+            >
               Education
             </Checkbox>
-            <Checkbox size="md" colorScheme="green">
-              Culture
-            </Checkbox>
-            <Checkbox size="md" colorScheme="green">
+            <Checkbox
+              id="science"
+              size="md"
+              colorScheme="green"
+              onChange={handleInputChange}
+              defaultChecked={account.causes[0]["science"]}
+            >
               Science
             </Checkbox>
-            <Checkbox size="md" colorScheme="green">
+            <Checkbox
+              id="conservation"
+              size="md"
+              colorScheme="green"
+              onChange={handleInputChange}
+              defaultChecked={account.causes[0]["conservation"]}
+            >
               Conservation
             </Checkbox>
-            <Checkbox size="md" colorScheme="green">
+            <Checkbox
+              id="training"
+              size="md"
+              colorScheme="green"
+              onChange={handleInputChange}
+              defaultChecked={account["training"]}
+            >
               Training
             </Checkbox>
           </Stack>
@@ -159,7 +209,7 @@ const Account = ({ account }) => {
         </FormControl>
 
         <Button width={200} onClick={handleOnSubmit}>
-          Submit
+          {isLoading ? "Submiting..." : "Submit"}
         </Button>
       </Box>
 

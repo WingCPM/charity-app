@@ -3,14 +3,21 @@ const client = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
+    const { charity_name } = req.query;
+    console.log("ssss", charity_name);
+
     const accountDetails = await client.charities.findUnique({
       where: {
-        name: "RSPCA",
+        name: charity_name,
+      },
+      include: {
+        causes: true,
       },
     });
-    console.log("successfuly creted record");
+    console.log("successfuly retrieved record");
     res.send(accountDetails);
   } catch (error) {
-    console.log("error creating relationship record", error);
+    console.log("error retrieving record", error);
+    res.send(500);
   }
 }

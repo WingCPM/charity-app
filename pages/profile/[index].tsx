@@ -2,78 +2,42 @@ import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { Grid, Container, Box, Badge, Heading, Text } from "@chakra-ui/react";
+import {
+  Grid,
+  Container,
+  Box,
+  Badge,
+  Heading,
+  Text,
+  Spinner,
+} from "@chakra-ui/react";
 
 import { CheckoutForm } from "../../components/CheckoutForm";
+import { useSWRFetcher } from "../../hooks/useSWR";
+import { useRouter } from "next/router";
 
-export async function getStaticPaths(context) {
-  return { paths: ["/profile/1036733"], fallback: false };
-}
+// export async function getStaticPaths(context) {
+//   return { paths: ["/profile/RSPCA"], fallback: false };
+// }
 
-export async function getStaticProps({ params }) {
-  console.log("params", params.index);
-  const URL = "https://charitybase.uk/api/graphql";
-  const HEADERS = {
-    Authorization: "Apikey YOUR_API_KEY",
-    "Content-Type": "application/json",
-  };
-  const COUNT_QUERY = `
-    {
-    CHC {
-      getCharities(filters: {id: ${params.index}}) {
-      list(limit: 30) {
-        id
-        financialYearEnd
-        image {
-          logo {
-            medium
-          }
-        }
-        contact {
-          social {
-            handle
-            platform
-          }
-        }
-        website
-        objectives
-        names {
-          value
-        }
-        activities
-        causes {
-          name
-        }
-      }
-      }
-    }
-  }
-  `;
+// export async function getStaticProps() {
+//   let account = {};
+//   try {
+//     account = await fetch(
+//       "http://localhost:3000/api/get-charity-account?charity_name=RSPCA"
+//     )
+//       .then((res) => res.json())
+//       .catch((error) => console.log("ERROR GETTING CHARITY ACCOUNT", error));
+//   } catch (error) {
+//     console.log("ERROR GETTING CHARITY ACCOUNT", error);
+//   }
 
-  async function countCharities() {
-    return fetch(URL, {
-      method: "POST",
-      headers: HEADERS,
-      body: JSON.stringify({ query: COUNT_QUERY }),
-    })
-      .then((res) => res.json())
-      .catch((err) => {
-        console.error("FETCH ERROR (probably your network)");
-        throw err;
-      })
-      .then(({ data, errors }) => {
-        if (errors) {
-          console.error("QUERY ERRORS", errors.toString());
-          throw errors;
-        }
-        return { data: data.CHC.getCharities };
-      });
-  }
-
-  return {
-    props: { charity: await countCharities() },
-  };
-}
+//   return {
+//     props: {
+//       account,
+//     },
+//   };
+// }
 
 interface ProfileProps {
   charity: {
@@ -104,8 +68,15 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-const Charity: NextPage = ({ charity }: ProfileProps) => {
+const Profile: NextPage = () => {
   const [clientSecret, setClientSecret] = useState("");
+  const router = useRouter();
+  const charityName = router.query.index;
+  console.log("charityName", charityName);
+  const { data, error } = useSWRFetcher({
+    url: `http://localhost:3000/api/get-charity-account?charity_name=${charityName}`,
+  });
+
   const appearance = {
     theme: "stripe",
   };
@@ -114,6 +85,8 @@ const Charity: NextPage = ({ charity }: ProfileProps) => {
     appearance,
   };
 
+  console.log("account", data);
+
   useEffect(() => {
     console.log("CREATING PAYMENT INTETN");
     fetch("/api/create-payment-intent", {
@@ -121,7 +94,7 @@ const Charity: NextPage = ({ charity }: ProfileProps) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         donationAmount: 500,
-        charity: charity.data.list[0].names[0].value,
+        charity: "RSPCA",
         business_name: "Sainsburys",
       }),
     })
@@ -129,51 +102,55 @@ const Charity: NextPage = ({ charity }: ProfileProps) => {
       .then((data) => setClientSecret(data.clientSecret));
   }, []);
 
-  return (
+  const causes = [];
+
+  // for (const property in data.causes[0]) {
+  //   if (data.causes[0][property] === true) causes.push(property);
+  //   // console.log(`${property}: ${data.causes[0][property]}`);
+  // }
+
+  // console.log("causes", causes);
+
+  return !data ? (
+    <Spinner size="xl" />
+  ) : (
     clientSecret && (
       <Elements options={options} stripe={stripePromise}>
-        <Container maxW="2xl" centerContent mt={24} mb={24}>
+        <Container maxW="2xl" mt={24} mb={24}>
           <Grid>
-            {charity.data.list.map((charity, index) => (
-              <>
-                <Box>
-                  <Heading as="h1" size="md" noOfLines={1} mb={4}>
-                    {charity.names[0].value}
-                  </Heading>
-                </Box>
-                <Box display="flex" alignItems="baseline">
-                  {charity.causes[0].name.split("/").map((cause, index) => (
-                    <Badge
-                      mr={1}
-                      key={index}
-                      borderRadius="full"
-                      px="2"
-                      colorScheme="teal"
-                    >
-                      {cause}
-                    </Badge>
-                  ))}
-                </Box>
-                <Box display="flex" alignItems="baseline" mt={2} mb={4}>
-                  {charity.contact?.social.map((social, index) => (
-                    <Badge
-                      px="2"
-                      borderRadius="full"
-                      key={index}
-                      mr="1"
-                      colorScheme="green"
-                    >
-                      {social.platform}
-                    </Badge>
-                  ))}
-                </Box>
-                <Box>
-                  <Text fontSize="md" mb={2}>
-                    {charity.activities}
-                  </Text>
-                </Box>
-              </>
-            ))}
+            <Box>
+              <Heading as="h1" size="md" noOfLines={1} mb={4}>
+                {data?.name}
+              </Heading>
+            </Box>
+            {/* <Box display="flex" alignItems="baseline">
+              {causes.map((cause, index) => (
+                <Badge
+                  mr={1}
+                  key={index}
+                  borderRadius="full"
+                  px="2"
+                  colorScheme="teal"
+                >
+                  {cause}
+                </Badge>
+              ))}
+            </Box> */}
+            <Box mt={2} mb={4}>
+              <Text>{data?.website}</Text>
+            </Box>
+            <Box mt={2} mb={4}>
+              <Text>{data?.bio}</Text>
+            </Box>
+            <Box mt={2} mb={4}>
+              <Text>{data?.tiktok}</Text>
+            </Box>
+            <Box mt={2} mb={4}>
+              <Text>{data?.instagram}</Text>
+            </Box>
+            <Box mt={2} mb={4}>
+              <Text>{data?.snapchat}</Text>
+            </Box>
           </Grid>
           <CheckoutForm />
         </Container>
@@ -182,4 +159,4 @@ const Charity: NextPage = ({ charity }: ProfileProps) => {
   );
 };
 
-export default Charity;
+export default Profile;
